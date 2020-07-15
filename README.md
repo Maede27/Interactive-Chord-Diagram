@@ -1,1 +1,1 @@
-# InteractiveChord
+# InteractiveChordDiagram
