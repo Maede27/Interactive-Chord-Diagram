@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>page1_test_dynamic_chord_new_below</title>
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		     
+		<style>
+
+			.bar {
+				fill: green;
+				opacity: 0.8;
+			}
+
+			.bar_1 {
+				fill: orange;
+				opacity: 0.8;
+			}
+			.axis path,
+			.axis line {
+				fill: none;
+				stroke: #000;
+				shape-rendering: crispEdges;
+			}
+
+			h1, h2 {
+				text-align: left;
+			}
+			
+			.bar:hover {
+				fill: yellow;
+			}
+			
+			.bar_1:hover {
+				fill: red;
+			}
+
+			input {
+				margin: 34px;
+				margin-top: 5px;
+				margin-bottom: 5px;
+				}
+
+			#box1 {
+				margin-top: 10px;
+				margin-bottom: 1px;
+				margin-left: 1080px;
+				}
+
+			#box2 {
+				margin-top: 10px;
+				margin-bottom: 1px;
+				margin-left: 1080px;
+				}
+
+			#box3 {
+				margin-top: 10px;
+				margin-bottom: 1px;
+				margin-left: 1080px;
+				}
+			
+				
+			#selectage {
+				margin-top: 10px;
+				margin-bottom: 10px;
+				margin-left: 20px;
+			}
+
+			#selectsex {
+				margin-top: 10px;
+				margin-bottom: 10px;
+				margin-left: 30px;
+			}
+			#selectincome {
+				margin-top: 10px;
+				margin-bottom: 10px;
+				margin-left: 30px;
+			}
+			#selectmodel {
+				margin-top: 10px;
+				margin-bottom: 10px;
+				margin-left: 30px;
+			}
+			body {
+				background: white;
+			}
+			#chart_circle {
+				text-align: center;
+				float:left;
+				color:#fff;
+				width: 400px;
+				height: 550px;
+			}
+			.details {
+				float:left;
+				width:350px;
+			}
+			/*
+			.dependencyWheel {
+				font: 10px sans-serif;
+			}*/
+			#circle circle {
+				fill: none;
+				pointer-events: all;
+			}
+			path.chord {
+				stroke: #000;
+				stroke-width: .10px;
+				transition: opacity 0.3s;
+			}
+			 #circle:hover path.fade {
+				opacity: 0;
+			}
+
+			svg {
+				font-size: 10px;
+				color: green;
+				min-height: 100%;
+				min-width: 100%;
+			}
+
+			.current{
+				background-color: white;
+				color: black;
+				font-size : 16px;
+				font-family: Arial Narrow,Arial,sans-serif;
+				border-color: black;
+				border-radius: 2em;
+			}
+
+			.scroll {
+				position:absolute; /*on top of vis*/
+				top:0;
+				left:0px;
+			}
+			.scroll2 {
+				float:left;
+			}
+			/* unvisited link */
+			a.one:link {
+				color:  #3CBCBC;
+				text-decoration: none;
+			}
+
+			/* visited link */
+			a.one:visited {
+				color: #54C571;
+			}
+
+			/* mouse over link */
+			a.one:hover {
+				color: #736AFF;
+			}
+
+			/* selected link */
+			a.one:active {
+				color: #3CBCBC;
+			}
+			/*this are the links to the table not to other pages*/
+			/* mouse over link */
+			a.two:hover + table {
+				display: table;
+				color: black;
+			}
+			/* unvisited link */
+			a.two:link {
+				font-family: verdana;
+				color: black;
+				text-decoration: none;
+			}
+			/* visited link */
+			a.two:visited {
+				font-family: verdana;
+				color: black;
+			}
+			/* mouse over link */
+			a.two:hover {
+				font-family: verdana;
+				color: gray;
+			}
+			/* selected link */
+			a.two:active {
+				font-family: verdana;
+				color: black;
+			} 
+			/*text is disease name only on chord diagram and scroll text*/
+			text {
+				fill: black;
+				font-family: Arial Narrow,Arial,sans-serif;
+				text-align: center;
+				font-size: 16px;
+			} 
+ 
+		</style>
+		</head>
+		<body>
+		
+		<select id = "selectage">
+			<option value="AllAges">All Ages</option>
+			<option value="AgeGroup1">Age Group1</option>
+			<option value="AgeGroup2">Age Group2</option>
+			<option value="AgeGroup3">Age Group3</option>
+			<option value="AgeGroup4">Age Group4</option>
+		</select>
+
+				<select id = "selectsex">
+			<option value="All">All Genders</option>
+			<option value="Female">Female</option>
+			<option value="Male">Male</option>
+			<option value="Others">Others</option>
+		</select>
+
+				<select id = "selectincome">
+			<option value="incomeGroup1">All income Groups</option>
+			<option value="AgeGroup1">Income Group1</option>
+			<option value="AgeGroup2">Income Group2</option>
+			<option value="AgeGroup3">Income Group3</option>
+			<option value="AgeGroup4">Income Group4</option>
+		</select>
+		
+				<select id = "selectmodel">
+			<option value="Logistic Regression">Logistic Regression</option>
+			<option value="Suport Vector Machine">Suport Vector Machine</option>
+			<option value="Random Forest">Random Forest</option>
+			<option value="Neural Network">Neural Network</option>
+		</select>
+
+			<table style="width:100%;">
+
+                <tr>
+                    <td style="width:50%;">
+                        <div id="chart_circle"></div>
+                        <script type="text/javascript" src="chord_jquery.js"></script>
+                    </td>
+
+                    <td style="width:50%;">
+                        <div id='vis-container'></div>
+                        <script type="text/javascript">
+
+                            // set the title of the graph
+                            d3.select("#vis-container").append("h1").text("Visualizing High-Dimensional Joint Distributions of Chronic Diseases");
+                            d3.select("#vis-container").append("h2").text("--Western University");
+
+
+                            var fileName1 = "./probability_dataset_five_disease.csv",
+                                diseases = ["disease1", "disease2", "disease3", "disease4", "disease5"];
+                            var fileName2 = "./probability_dataset_five_disease.csv"
+
+                            // Define dimensions of vis
+                            var margin = { top: 30, right: 50, bottom: 30, left: 50 },
+                                width = 550 - margin.left - margin.right,
+                                height = 300 - margin.top - margin.bottom;
+
+                            // Make x scale
+                            var xScale = d3.scale.ordinal()
+                                .domain(diseases)
+                                .rangeRoundBands([0, width], 0.2);
+
+                            // Make y scale, the domain will be defined on bar update
+                            var yScale = d3.scale.linear()
+                                .range([height, 0]);
+
+                            var makeVis = function () {
+
+                                // Create canvas
+                                var chart1 = d3.select("#vis-container")
+                                    .append("svg")
+                                    .attr("width", width + margin.left + margin.right)
+                                    .attr("height", height + margin.top + margin.bottom)
+                                    .append("g")
+                                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                                // Make x-axis and add to canvas
+                                var xAxis = d3.svg.axis()
+                                    .scale(xScale)
+                                    .orient("bottom");
+
+                                chart1.append("g")
+                                    .attr("class", "x axis")
+                                    .attr("transform", "translate(0," + height + ")")
+                                    .call(xAxis);
+
+                                // Make y-axis and add to canvas
+                                var yAxis = d3.svg.axis()
+                                    .scale(yScale)
+                                    .orient("left");
+
+                                var yAxisHandleForUpdate = chart1.append("g")
+                                    .attr("class", "y axis")
+                                    .call(yAxis);
+
+                                yAxisHandleForUpdate.append("text")
+                                    .attr("transform", "rotate(-90)")
+                                    .attr("y", 6)
+                                    .attr("dy", ".71em")
+                                    .style("text-anchor", "end")
+                                    .text("Probability");
+
+                                var get_count = function (count) {
+
+                                    var row = {};
+
+                                    d3.csv(fileName1, function (error, data) {
+                                        data.forEach(function (d, index) {
+
+                                            if (count == index + 1) {
+
+
+                                                for (key in d) {
+                                                    row[key] = d[key];
+                                                }
+
+                                                updateBars([row.d1, row.d2, row.d3, row.d4, row.d5]);
+
+                                            }//end if
+
+                                        });
+                                    });
+
+
+                                };
+
+                                var updateBars = function (data) {
+
+                                    // First update the y-axis domain to match data
+                                    yScale.domain(d3.extent(data));
+                                    yAxisHandleForUpdate.call(yAxis);
+
+                                    var bars = chart1.selectAll(".bar").data(data);
+
+                                    // Add bars for new data
+                                    bars.enter()
+                                        .append("rect")
+                                        .attr("class", "bar")
+                                        .attr("x", function (d, i) {
+                                            return xScale(diseases[i]);
+                                        })
+                                        .attr("width", xScale.rangeBand())
+                                        .attr("y", function (d, i) {
+                                            return yScale(d);
+                                        })
+                                        .attr("height", function (d, i) {
+                                            return height - yScale(d);
+                                        });
+
+                                    // Update old ones, already have x / width from before
+                                    bars
+                                        .transition().duration(350)
+                                        .attr("y", function (d, i) {
+                                            return yScale(d);
+                                        })
+                                        .attr("height", function (d, i) {
+                                            return height - yScale(d);
+                                        });
+
+                                    // Remove old ones
+                                    bars.exit().remove();
+                                };
+
+
+                                window.fn1 = function () {
+
+
+                                    var rad1 = document.getElementById("rad1");
+                                    var rad2 = document.getElementById("rad2");
+                                    var rad3 = document.getElementById("rad3");
+                                    var rad4 = document.getElementById("rad4");
+                                    var rad5 = document.getElementById("rad5");
+                                    var rad6 = document.getElementById("rad6");
+                                    var rad7 = document.getElementById("rad7");
+                                    var rad8 = document.getElementById("rad8");
+                                    var rad9 = document.getElementById("rad9");
+                                    var rad10 = document.getElementById("rad10");
+                                    var rad11 = document.getElementById("rad11");
+                                    var rad12 = document.getElementById("rad12");
+                                    var rad13 = document.getElementById("rad13");
+                                    var rad14 = document.getElementById("rad14");
+                                    var rad15 = document.getElementById("rad15");
+                                    var count = 1;
+
+
+                                    if (rad1.checked == true) {
+                                        count = Number(rad1.value) + count;
+                                    };
+                                    if (rad2.checked == true) {
+                                        count = Number(rad2.value) + count;
+                                    };
+                                    if (rad3.checked == true) {
+                                        count = Number(rad3.value) + count;
+                                    };
+                                    if (rad4.checked == true) {
+                                        count = Number(rad4.value) + count;
+                                    };
+                                    if (rad5.checked == true) {
+                                        count = Number(rad5.value) + count;
+                                    };
+                                    if (rad6.checked == true) {
+                                        count = Number(rad6.value) + count;
+                                    };
+                                    if (rad7.checked == true) {
+                                        count = Number(rad7.value) + count;
+                                    };
+                                    if (rad8.checked == true) {
+                                        count = Number(rad8.value) + count;
+                                    };
+                                    if (rad9.checked == true) {
+                                        count = Number(rad9.value) + count;
+                                    };
+                                    if (rad10.checked == true) {
+                                        count = Number(rad10.value) + count;
+                                    };
+                                    if (rad11.checked == true) {
+                                        count = Number(rad11.value) + count;
+                                    };
+                                    if (rad12.checked == true) {
+                                        count = Number(rad12.value) + count;
+                                    };
+                                    if (rad13.checked == true) {
+                                        count = Number(rad13.value) + count;
+                                    };
+                                    if (rad14.checked == true) {
+                                        count = Number(rad14.value) + count;
+                                    };
+                                    if (rad15.checked == true) {
+                                        count = Number(rad15.value) + count;
+                                    };
+
+                                    get_count(count);
+                                };
+                            };
+                            document.onreadystatechange = function () {
+
+                                var state = document.readyState;
+                                if (state == 'interactive') {
+                                    makeVis();
+                                } else if (state == 'complete') {
+                                    makeVis_1();
+                                }
+
+                            };
+
+                            var makeVis_1 = function () {
+
+                                // Create canvas
+                                var chart2 = d3.select("#vis-container")
+                                    .append("svg")
+                                    .attr("width", width + margin.left + margin.right)
+                                    .attr("height", height + margin.top + margin.bottom)
+                                    .append("g")
+                                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                                // Make x-axis and add to canvas
+                                var xAxis = d3.svg.axis()
+                                    .scale(xScale)
+                                    .orient("bottom");
+
+                                chart2.append("g")
+                                    .attr("class", "x axis")
+                                    .attr("transform", "translate(0," + height + ")")
+                                    .call(xAxis);
+
+                                // Make y-axis and add to canvas
+                                var yAxis = d3.svg.axis()
+                                    .scale(yScale)
+                                    .orient("left");
+
+                                var yAxisHandleForUpdate = chart2.append("g")
+                                    .attr("class", "y axis")
+                                    .call(yAxis);
+
+                                yAxisHandleForUpdate.append("text")
+                                    .attr("transform", "rotate(-90)")
+                                    .attr("y", 6)
+                                    .attr("dy", ".71em")
+                                    .style("text-anchor", "end")
+                                    .text("Probability");
+
+                                var get_count_1 = function (count) {
+
+                                    var row = {};
+
+                                    d3.csv(fileName2, function (error, data) {
+                                        data.forEach(function (d, index) {
+
+                                            if (count == index + 1) {
+
+
+                                                for (key in d) {
+                                                    row[key] = d[key];
+                                                }
+
+                                                updateBars([row.d1, row.d2, row.d3, row.d4, row.d5]);
+
+                                            }//end if
+
+                                        });
+                                    });
+
+
+                                };
+
+                                var updateBars = function (data) {
+
+                                    // First update the y-axis domain to match data
+                                    yScale.domain(d3.extent(data));
+                                    yAxisHandleForUpdate.call(yAxis);
+
+                                    var bars = chart2.selectAll(".bar_1").data(data);
+
+                                    // Add bars for new data
+                                    bars.enter()
+                                        .append("rect")
+                                        .attr("class", "bar_1")
+                                        .attr("x", function (d, i) {
+                                            return xScale(diseases[i]);
+                                        })
+                                        .attr("width", xScale.rangeBand())
+                                        .attr("y", function (d, i) {
+                                            return yScale(d);
+                                        })
+                                        .attr("height", function (d, i) {
+                                            return height - yScale(d);
+                                        });
+
+                                    // Update old ones, already have x / width from before
+                                    bars
+                                        .transition().duration(350)
+                                        .attr("y", function (d, i) {
+                                            return yScale(d);
+                                        })
+                                        .attr("height", function (d, i) {
+                                            return height - yScale(d);
+                                        });
+
+                                    // Remove old ones
+                                    bars.exit().remove();
+                                };
+                                window.fn2 = function () {
+
+
+                                    var rad1 = document.getElementById("rad1");
+                                    var rad2 = document.getElementById("rad2");
+                                    var rad3 = document.getElementById("rad3");
+                                    var rad4 = document.getElementById("rad4");
+                                    var rad5 = document.getElementById("rad5");
+                                    var rad6 = document.getElementById("rad6");
+                                    var rad7 = document.getElementById("rad7");
+                                    var rad8 = document.getElementById("rad8");
+                                    var rad9 = document.getElementById("rad9");
+                                    var rad10 = document.getElementById("rad10");
+                                    var rad11 = document.getElementById("rad11");
+                                    var rad12 = document.getElementById("rad12");
+                                    var rad13 = document.getElementById("rad13");
+                                    var rad14 = document.getElementById("rad14");
+                                    var rad15 = document.getElementById("rad15");
+                                    var count = 1;
+
+
+                                    if (rad1.checked == true) {
+                                        count = Number(rad1.value) + count;
+                                    };
+                                    if (rad2.checked == true) {
+                                        count = Number(rad2.value) + count;
+                                    };
+                                    if (rad3.checked == true) {
+                                        count = Number(rad3.value) + count;
+                                    };
+                                    if (rad4.checked == true) {
+                                        count = Number(rad4.value) + count;
+                                    };
+                                    if (rad5.checked == true) {
+                                        count = Number(rad5.value) + count;
+                                    };
+                                    if (rad6.checked == true) {
+                                        count = Number(rad6.value) + count;
+                                    };
+                                    if (rad7.checked == true) {
+                                        count = Number(rad7.value) + count;
+                                    };
+                                    if (rad8.checked == true) {
+                                        count = Number(rad8.value) + count;
+                                    };
+                                    if (rad9.checked == true) {
+                                        count = Number(rad9.value) + count;
+                                    };
+                                    if (rad10.checked == true) {
+                                        count = Number(rad10.value) + count;
+                                    };
+                                    if (rad11.checked == true) {
+                                        count = Number(rad11.value) + count;
+                                    };
+                                    if (rad12.checked == true) {
+                                        count = Number(rad12.value) + count;
+                                    };
+                                    if (rad13.checked == true) {
+                                        count = Number(rad13.value) + count;
+                                    };
+                                    if (rad14.checked == true) {
+                                        count = Number(rad14.value) + count;
+                                    };
+                                    if (rad15.checked == true) {
+                                        count = Number(rad15.value) + count;
+                                    };
+
+                                    get_count_1(count);
+                                };
+                                // }
+                            };
+
+                        </script>
+                    </td>
+                    
+                
+                </tr>
+            </table>
+				
+			
+			
+<table>
+            <tr>
+    <td>
+        <div class="details">
+
+            <!--This script is to highlight each status button while on it-->
+            <script type="text/javascript">
+                $('#statusbuttons button').on('click', function () {
+                    $('button.current').removeClass('current');
+                    $(this).addClass('current');
+                });
+            </script>
+
+
+        </div>
+    </td>
+                </tr>
+</table>			
+		
+
+            <table style="width:100%;">
+                <tr>
+                    <td>
+                        <div id='box1'>
+                            <input id="rad1" type="radio" name="probab1" value="1">
+                            <input id="rad2" type="radio" name="probab2" value="3">
+                            <input id="rad3" type="radio" name="probab3" value="9">
+                            <input id="rad4" type="radio" name="probab4" value="27">
+                            <input id="rad5" type="radio" name="probab5" value="81"> &#10004;
+
+                        </div>
+                    </td>
+                </tr>
+				
+                <tr>
+                    <td>
+                        <div id='box2'>
+                            <input id="rad6" type="radio" name="probab1" value="2">
+                            <input id="rad7" type="radio" name="probab2" value="6">
+                            <input id="rad8" type="radio" name="probab3" value="18">
+                            <input id="rad9" type="radio" name="probab4" value="54">
+                            <input id="rad10" type="radio" name="probab5" value="162"> &#10006;
+
+                        </div>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div id='box3'>
+                            <input id="rad11" type="radio" name="probab1" value="0">
+                            <input id="rad12" type="radio" name="probab2" value="0">
+                            <input id="rad13" type="radio" name="probab3" value="0">
+                            <input id="rad14" type="radio" name="probab4" value="0">
+                            <input id="rad15" type="radio" name="probab5" value="0"> &#10068;
+                        </div>
+                    </td>
+                </tr>
+				
+                <tr>
+                    <td>
+                        <div id="statusbuttons">
+                            <button onclick="window.fn1()" id="prevalence_cor" class="current">Check for Prevalence</button>
+                            <button onclick="window.fn2()" id="incidence_cor" class="">Check for Incidence</button>
+                        </div>
+                    </td>
+                </tr>
+					
+				
+             </table>
+	</body>
+</html>
